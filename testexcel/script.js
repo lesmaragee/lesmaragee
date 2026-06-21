@@ -21,16 +21,21 @@
   // ===== Hero scanner sequence =====
   const rows = document.querySelectorAll('.scanner-row');
   const final = document.querySelector('.scanner-final');
+  const approved = document.querySelector('.scanner-approved');
   if (rows.length) {
     if (reducedMotion) {
       rows.forEach(r => r.classList.add('is-checked'));
       final && final.classList.add('is-cleared');
+      approved && approved.classList.add('is-cleared');
     } else {
       let delay = 500;
       rows.forEach((row, i) => {
         setTimeout(() => row.classList.add('is-checked'), delay + i * 420);
       });
-      setTimeout(() => final && final.classList.add('is-cleared'), delay + rows.length * 420 + 200);
+      setTimeout(() => {
+        final && final.classList.add('is-cleared');
+        approved && approved.classList.add('is-cleared');
+      }, delay + rows.length * 420 + 200);
     }
   }
 

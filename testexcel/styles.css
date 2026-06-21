@@ -218,6 +218,34 @@ h1,h2,h3{
   position:relative;
   overflow:hidden;
 }
+.hero::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background-image:
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size:64px 64px;
+  mask-image:radial-gradient(ellipse 70% 60% at 70% 35%, rgba(0,0,0,.9), transparent 75%);
+  pointer-events:none;
+}
+.hero::after{
+  content:'';
+  position:absolute;
+  top:18%;
+  right:6%;
+  width:46%;
+  height:46%;
+  background-image:
+    radial-gradient(circle at 12% 20%, rgba(255,255,255,.5) 0 2px, transparent 2px),
+    radial-gradient(circle at 78% 10%, rgba(255,255,255,.4) 0 2px, transparent 2px),
+    radial-gradient(circle at 55% 60%, rgba(255,255,255,.45) 0 2px, transparent 2px),
+    radial-gradient(circle at 90% 75%, rgba(255,255,255,.35) 0 2px, transparent 2px),
+    linear-gradient(115deg, transparent 49.5%, rgba(255,255,255,.06) 50%, transparent 50.5%),
+    linear-gradient(35deg, transparent 49.5%, rgba(255,255,255,.06) 50%, transparent 50.5%);
+  opacity:.7;
+  pointer-events:none;
+}
 .hero-grid{
   display:grid;
   grid-template-columns:1.2fr 1fr;
@@ -246,6 +274,13 @@ h1,h2,h3{
   gap:16px;
   margin-top:44px;
   flex-wrap:wrap;
+}
+.hero-credibility{
+  margin-top:28px;
+  font-family:var(--mono);
+  font-size:12.5px;
+  letter-spacing:0.04em;
+  color:var(--grey-600,#777);
 }
 
 /* scanner readout */
@@ -290,6 +325,17 @@ h1,h2,h3{
 }
 .scanner-final.is-cleared .dot{background:var(--white); box-shadow:0 0 0 4px rgba(255,255,255,.12);}
 .scanner-final.is-cleared{color:var(--white);}
+.scanner-approved{
+  margin-top:6px;
+  padding-left:18px;
+  font-family:var(--display);
+  font-size:18px;
+  font-weight:700;
+  letter-spacing:-0.01em;
+  color:var(--grey-700);
+  transition:color .5s var(--ease);
+}
+.scanner-approved.is-cleared{color:var(--white);}
 
 /* ===== Trust section ===== */
 .stats-grid{
