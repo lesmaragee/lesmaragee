@@ -68,12 +68,6 @@ ul{list-style:none;}
   margin-bottom:24px;
 }
 .section--black .eyebrow{color:var(--grey-400);}
-.eyebrow::before{
-  content:'';
-  width:24px;
-  height:1px;
-  background:currentColor;
-}
 
 h1,h2,h3{
   font-family:var(--display);
