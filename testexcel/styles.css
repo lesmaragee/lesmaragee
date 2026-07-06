@@ -298,10 +298,13 @@ h1,h2,h3{
   height:160px;
 }
 .hero-icon-img{
-  width:clamp(120px,18vw,200px);
+  width:clamp(100px,14vw,160px);
   height:auto;
-  mix-blend-mode:screen;
   object-fit:contain;
+  border-radius:12px;
+  border:1px solid #2a2a2a;
+  background:#0a0a0a;
+  mix-blend-mode:screen;
 }
 .hero-icon-img--1{
   animation:iconFloat 3.8s ease-in-out infinite, iconRotate 8s ease-in-out infinite;
