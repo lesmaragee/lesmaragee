@@ -250,10 +250,11 @@ h1,h2,h3{
   .hero-grid{grid-template-columns:1fr; gap:48px;}
 }
 .hero-headline{
-  font-size:clamp(52px,9vw,118px);
+  font-size:clamp(36px,5.2vw,68px);
   font-weight:800;
   letter-spacing:-0.03em;
-  line-height:0.98;
+  line-height:1.02;
+  max-width:16ch;
 }
 .hero-headline .char{display:inline-block;}
 .hero-sub{
