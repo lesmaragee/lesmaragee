@@ -283,6 +283,39 @@ h1,h2,h3{
   color:var(--grey-600,#777);
 }
 
+/* ===== Hero card image ===== */
+.card-hero-wrap{
+  perspective:1200px;
+  display:flex;
+  justify-content:center;
+  margin-bottom:32px;
+}
+.card-hero-img{
+  width:100%;
+  max-width:420px;
+  height:auto;
+  border-radius:4px;
+  animation:cardHeroFloat 4s ease-in-out infinite, cardHeroTilt 10s ease-in-out infinite;
+  transform-style:preserve-3d;
+  cursor:pointer;
+  filter:drop-shadow(0 24px 48px rgba(196,154,46,.2));
+  transition:transform .12s linear;
+  will-change:transform;
+}
+@keyframes cardHeroFloat{
+  0%,100%{transform:translateY(0) rotateX(4deg) rotateY(-8deg);}
+  50%{transform:translateY(-16px) rotateX(4deg) rotateY(-8deg);}
+}
+@keyframes cardHeroTilt{
+  0%,100%{transform:translateY(0) rotateX(4deg) rotateY(-8deg);}
+  25%{transform:translateY(-8px) rotateX(2deg) rotateY(-5deg);}
+  50%{transform:translateY(-14px) rotateX(6deg) rotateY(-10deg);}
+  75%{transform:translateY(-6px) rotateX(3deg) rotateY(-6deg);}
+}
+@media (prefers-reduced-motion: reduce){
+  .card-hero-img{animation:none; transform:rotateX(4deg) rotateY(-8deg);}
+}
+
 /* ===== Hero icon scene ===== */
 .hero-icon-scene{
   display:flex;

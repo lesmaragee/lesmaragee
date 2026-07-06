@@ -2,6 +2,22 @@
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.getElementById('year').textContent = new Date().getFullYear();
 
+  // ===== Card mouse tilt =====
+  const heroCard = document.getElementById('heroCard');
+  if (heroCard && !reducedMotion) {
+    heroCard.addEventListener('mousemove', (e) => {
+      const r = heroCard.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width  - 0.5;
+      const y = (e.clientY - r.top)  / r.height - 0.5;
+      heroCard.style.animation = 'none';
+      heroCard.style.transform = `translateY(-10px) rotateX(${-y * 14}deg) rotateY(${x * 18}deg)`;
+    });
+    heroCard.addEventListener('mouseleave', () => {
+      heroCard.style.transform = '';
+      heroCard.style.animation = '';
+    });
+  }
+
   // ===== Scroll reveal =====
   const revealTargets = document.querySelectorAll('[data-reveal], [data-reveal-stagger]');
   if (reducedMotion) {
