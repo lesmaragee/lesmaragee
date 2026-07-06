@@ -2,6 +2,14 @@
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.getElementById('year').textContent = new Date().getFullYear();
 
+  // ===== Header background on scroll =====
+  const header = document.querySelector('.site-header');
+  if (header) {
+    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 20);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
   // ===== Card mouse tilt =====
   const heroCard = document.getElementById('heroCard');
   if (heroCard && !reducedMotion) {

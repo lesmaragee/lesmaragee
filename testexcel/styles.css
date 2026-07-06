@@ -128,6 +128,18 @@ h1,h2,h3{
   justify-content:space-between;
   mix-blend-mode:difference;
   color:#fff;
+  transition:padding .3s var(--ease), background .3s var(--ease), backdrop-filter .3s var(--ease), border-color .3s var(--ease);
+  border-bottom:1px solid transparent;
+}
+.site-header.is-scrolled{
+  mix-blend-mode:normal;
+  background:rgba(10,10,10,.72);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-bottom-color:rgba(255,255,255,.08);
+  padding-top:14px;
+  padding-bottom:14px;
+  box-shadow:0 8px 30px rgba(0,0,0,.35);
 }
 .logo{
   font-family:var(--mono);
