@@ -283,6 +283,56 @@ h1,h2,h3{
   color:var(--grey-600,#777);
 }
 
+/* ===== Hero icon scene ===== */
+.hero-icon-scene{
+  display:flex;
+  flex-direction:column;
+  gap:32px;
+}
+.hero-icon-wrap{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:-20px;
+  height:160px;
+}
+.hero-icon-img{
+  width:clamp(120px,18vw,200px);
+  height:auto;
+  mix-blend-mode:screen;
+  object-fit:contain;
+}
+.hero-icon-img--1{
+  animation:iconFloat 3.8s ease-in-out infinite, iconRotate 8s ease-in-out infinite;
+  position:relative;
+  z-index:2;
+  transform-origin:center center;
+  filter:drop-shadow(0 12px 32px rgba(196,154,46,.25));
+}
+.hero-icon-img--2{
+  animation:iconFloat 3.8s ease-in-out infinite .6s, iconRotate 8s ease-in-out infinite .4s reverse;
+  position:relative;
+  z-index:1;
+  margin-left:-20px;
+  opacity:.7;
+  filter:drop-shadow(0 8px 20px rgba(196,154,46,.15));
+}
+
+@keyframes iconFloat{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-14px);}
+}
+@keyframes iconRotate{
+  0%,100%{transform:translateY(0) rotate(-3deg);}
+  33%{transform:translateY(-10px) rotate(2deg);}
+  66%{transform:translateY(-6px) rotate(-1deg);}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .hero-icon-img--1,.hero-icon-img--2{animation:none;}
+}
+
 /* scanner readout */
 .scanner{
   font-family:var(--mono);
