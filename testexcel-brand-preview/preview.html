@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TestExcel Brand Preview</title>
+<style>
+@font-face{font-family:"Instrument Serif";src:url("assets/fonts/InstrumentSerif-Regular.ttf") format("truetype");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Instrument Serif";src:url("assets/fonts/InstrumentSerif-Italic.ttf") format("truetype");font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:"Instrument Sans";src:url("assets/fonts/InstrumentSans-Variable.ttf") format("truetype-variations");font-weight:100 900;font-style:normal;font-display:swap}
+
+:root{
+  --black-100:#111111;
+  --gold-100:#B89542;
+  --gold-120:#9C7D33;
+  --ivory-100:#F2EEE5;
+  --grey-100:#D9D9D9;
+  --white-100:#FFFFFF;
+  --text-on-dark:var(--ivory-100);
+  --text-on-dark-muted:var(--grey-100);
+  --border-subtle-dark:rgba(242,238,229,0.18);
+  --font-serif-display:"Instrument Serif",Georgia,serif;
+  --font-sans-structural:"Instrument Sans",Arial,sans-serif;
+  --space-4:16px; --space-5:24px; --space-6:32px; --space-7:48px; --space-8:64px; --space-9:96px;
+  --radius-sm:2px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:var(--black-100);
+  color:var(--text-on-dark);
+  font-family:var(--font-sans-structural);
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1280px;margin:0 auto;padding:0 clamp(24px,5vw,80px);}
+
+/* header */
+.header{
+  position:fixed;top:0;left:0;right:0;z-index:10;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:28px clamp(24px,5vw,80px);
+}
+.logo-mark{display:flex;align-items:center;gap:12px;}
+.logo-mark img{height:44px;width:44px;display:block;}
+.logo-word{font-family:var(--font-sans-structural);font-weight:600;font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-on-dark);}
+.nav-links{display:flex;gap:40px;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-on-dark-muted);}
+.nav-links a{color:inherit;text-decoration:none;}
+.nav-cta{
+  font-size:11px;letter-spacing:0.14em;text-transform:uppercase;
+  border:1px solid var(--border-subtle-dark);color:var(--text-on-dark);
+  padding:11px 20px;border-radius:var(--radius-sm);text-decoration:none;
+}
+
+/* hero */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+  padding-top:140px;padding-bottom:80px;position:relative;
+}
+.eyebrow{
+  font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-100);
+  display:flex;align-items:center;gap:12px;margin-bottom:28px;
+}
+.eyebrow::before{content:'01';font-family:var(--font-sans-structural);color:var(--text-on-dark-muted);}
+
+.hero-grid{display:grid;grid-template-columns:1.15fr 0.85fr;gap:64px;align-items:end;}
+@media (max-width:900px){.hero-grid{grid-template-columns:1fr;gap:48px;}}
+
+h1.headline{
+  font-family:var(--font-serif-display);
+  font-weight:400;
+  font-size:clamp(40px,5.6vw,72px);
+  line-height:1.06;
+  letter-spacing:-0.01em;
+  color:var(--white-100);
+}
+h1.headline em{font-style:italic;color:var(--gold-100);}
+
+.sub{
+  margin-top:28px;
+  font-size:18px;
+  color:var(--text-on-dark-muted);
+  max-width:46ch;
+  line-height:1.6;
+}
+
+.hero-ctas{display:flex;gap:16px;margin-top:40px;flex-wrap:wrap;}
+.btn{
+  font-family:var(--font-sans-structural);
+  font-size:12px;letter-spacing:0.1em;text-transform:uppercase;
+  padding:16px 28px;border-radius:var(--radius-sm);
+  text-decoration:none;display:inline-flex;align-items:center;gap:10px;
+  transition:opacity .2s ease;
+}
+.btn:hover{opacity:0.82;}
+.btn--gold{background:var(--gold-100);color:var(--black-100);font-weight:600;}
+.btn--ghost{border:1px solid var(--border-subtle-dark);color:var(--text-on-dark);}
+
+.credibility{margin-top:32px;font-size:12px;letter-spacing:0.04em;color:var(--text-on-dark-muted);}
+
+/* right column: verified stamp panel */
+.stamp-panel{
+  border:1px solid var(--border-subtle-dark);
+  padding:var(--space-6);
+  display:flex;flex-direction:column;align-items:center;gap:var(--space-5);
+  text-align:center;
+}
+.stamp-panel img{width:180px;height:180px;}
+.stamp-caption{
+  font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-100);
+}
+.stamp-sub{font-size:13px;color:var(--text-on-dark-muted);max-width:34ch;}
+
+/* trust row - numbered, no icons */
+.trust-row{
+  border-top:1px solid var(--border-subtle-dark);
+  margin-top:80px;padding-top:40px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:32px;
+}
+@media (max-width:900px){.trust-row{grid-template-columns:repeat(2,1fr);}}
+.trust-item .n{font-size:11px;color:var(--text-on-dark-muted);letter-spacing:0.1em;}
+.trust-item .t{margin-top:8px;font-size:14px;color:var(--text-on-dark);}
+
+.note{
+  max-width:1280px;margin:0 auto;padding:48px clamp(24px,5vw,80px) 100px;
+  font-size:13px;color:var(--text-on-dark-muted);border-top:1px solid var(--border-subtle-dark);
+}
+.note b{color:var(--gold-100);}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo-mark">
+    <img src="assets/logo/testexcel-stamp-dark-bg.png" alt="TestExcel">
+    <span class="logo-word">TestExcel</span>
+  </div>
+  <nav class="nav-links">
+    <a href="#">Services</a>
+    <a href="#">Expertise</a>
+    <a href="#">Evidence</a>
+    <a href="#">Founder</a>
+  </nav>
+  <a href="#" class="nav-cta">Talk to TestExcel</a>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Payments QA, quality driven</p>
+
+    <div class="hero-grid">
+      <div>
+        <h1 class="headline">We find what breaks,<br>before your customers do<em>.</em></h1>
+        <p class="sub">Payments QA, scheme compliance, test automation and release assurance for banks, fintechs and payment providers. We manufacture proof, not opinions.</p>
+        <div class="hero-ctas">
+          <a href="#" class="btn btn--gold">Talk to TestExcel</a>
+          <a href="#" class="btn btn--ghost">See the evidence</a>
+        </div>
+        <p class="credibility">Evidence before opinion. Trusted across payments, fintech and regulated banking.</p>
+      </div>
+
+      <div class="stamp-panel">
+        <img src="assets/logo/testexcel-stamp-dark-bg.png" alt="TestExcel verified stamp">
+        <div class="stamp-caption">Release: verified</div>
+        <div class="stamp-sub">The stamp appears only where something has been checked, decided, or confirmed. Never a decoration.</div>
+      </div>
+    </div>
+
+    <div class="trust-row">
+      <div class="trust-item"><div class="n">01</div><div class="t">120 payment releases tested</div></div>
+      <div class="trust-item"><div class="n">02</div><div class="t">40 scheme certifications supported</div></div>
+      <div class="trust-item"><div class="n">03</div><div class="t">98% defects caught pre-production</div></div>
+      <div class="trust-item"><div class="n">04</div><div class="t">15 years combined payments QA</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="note">
+  <b>Preview note.</b> This is a one-section mockup of your real locked brand system: signature black #111111, confidence gold #B89542 used only as a verdict color (the CTA, the stamp, the metrics label), warm ivory reserved for editorial surfaces, Instrument Serif for the earned headline moment, Instrument Sans for everything structural, numbered labels instead of icons, hairline borders only, no drop shadows, sentence-case headline. This is not yet applied to the live site.
+</div>
+
+</body>
+</html>
