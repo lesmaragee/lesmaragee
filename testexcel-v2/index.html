@@ -485,36 +485,60 @@
       <h2 class="h-section" data-reveal>Let us make sure it is safe to release.</h2>
       <p class="lede" data-reveal>Tell us about your release, your scheme mandate deadline or the gap in your QA coverage. We will come back with how TestExcel can help.</p>
 
-      <form class="contact-grid" data-reveal-stagger novalidate>
+      <form class="contact-grid" id="contactForm" data-reveal-stagger novalidate>
         <div>
           <div class="row-2">
             <div class="field">
               <label for="name">Full name</label>
-              <input id="name" name="name" type="text" required>
+              <input id="name" name="name" type="text" autocomplete="name" required>
             </div>
             <div class="field">
-              <label for="company">Company</label>
-              <input id="company" name="company" type="text" required>
+              <label for="company">Company <span class="field-hint">(optional)</span></label>
+              <input id="company" name="company" type="text" autocomplete="organization">
             </div>
           </div>
           <div class="row-2">
             <div class="field">
               <label for="email">Email</label>
-              <input id="email" name="email" type="email" required>
+              <input id="email" name="email" type="email" autocomplete="email" required>
             </div>
             <div class="field">
-              <label for="role">Role</label>
-              <input id="role" name="role" type="text">
+              <label for="role">Role <span class="field-hint">(optional)</span></label>
+              <input id="role" name="role" type="text" autocomplete="organization-title">
             </div>
+          </div>
+          <div class="field">
+            <label for="service">What are you looking for? <span class="field-hint">(optional)</span></label>
+            <select id="service" name="service">
+              <option value="Not sure yet" selected>Not sure yet</option>
+              <option value="Payments QA">Payments QA</option>
+              <option value="Scheme Compliance Testing">Scheme Compliance Testing</option>
+              <option value="Test Automation & AI-Assisted Engineering">Test Automation &amp; AI-Assisted Engineering</option>
+              <option value="Performance & Load Testing">Performance &amp; Load Testing</option>
+              <option value="Release & Risk Assurance">Release &amp; Risk Assurance</option>
+              <option value="Payments QA Advisory">Payments QA Advisory</option>
+              <option value="Test Strategy & Documentation">Test Strategy &amp; Documentation</option>
+              <option value="Vendor & Partner QA Coordination">Vendor &amp; Partner QA Coordination</option>
+              <option value="QA Capability Building">QA Capability Building</option>
+              <option value="Payments QA Training">Payments QA Training</option>
+              <option value="QA Talent Solutions">QA Talent Solutions</option>
+            </select>
           </div>
         </div>
         <div>
           <div class="field">
             <label for="message">How can we help?</label>
-            <textarea id="message" name="message" placeholder="Tell us about your project, QA challenge or release." required></textarea>
+            <textarea id="message" name="message" placeholder="Tell us about your project, QA challenge or release." minlength="10" required></textarea>
+          </div>
+          <!-- Honeypot: hidden from real visitors, invisible to screen readers, but a bot
+               filling every field will populate this and the submission is silently dropped. -->
+          <div class="field field--honeypot" aria-hidden="true">
+            <label for="website">Leave this field blank</label>
+            <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
           </div>
           <button type="submit" class="btn btn--gold">Talk to TestExcel</button>
-          <p class="form-note" aria-live="polite"></p>
+          <p class="form-note" role="status" aria-live="polite"></p>
+          <p class="form-privacy">By submitting this form, you agree that TestExcel may use the information provided to respond to your enquiry.</p>
         </div>
       </form>
     </div>

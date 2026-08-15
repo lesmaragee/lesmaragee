@@ -253,17 +253,137 @@
     applyHeroMode();
   }
 
-  // ===== Contact form (static site, JS-only success state) =====
-  const form = document.querySelector('.contact-grid');
+  // ===== Contact form: validated, persisted to Supabase, one row per submission =====
+  //
+  // SUPABASE_URL and SUPABASE_ANON_KEY are safe to ship in frontend code — this is
+  // Supabase's own security model. The anon key can only do what Row Level Security
+  // in supabase/schema.sql allows: insert a new row into contact_submissions. It
+  // cannot read, update or delete existing leads. Fill these in once the Supabase
+  // project from supabase/schema.sql exists; until then the form fails closed with
+  // a clear, honest error rather than pretending to succeed.
+  const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL'; // e.g. https://xxxxx.supabase.co
+  const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+
+  const form = document.getElementById('contactForm');
   if (form) {
-    form.addEventListener('submit', (e) => {
+    const note = form.querySelector('.form-note');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const fields = {
+      name: form.querySelector('#name'),
+      company: form.querySelector('#company'),
+      email: form.querySelector('#email'),
+      role: form.querySelector('#role'),
+      service: form.querySelector('#service'),
+      message: form.querySelector('#message'),
+      website: form.querySelector('#website'), // honeypot
+    };
+
+    let submitting = false;
+    let succeeded = false;
+
+    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    function setNote(text, state) {
+      note.textContent = text;
+      if (state) note.setAttribute('data-state', state);
+      else note.removeAttribute('data-state');
+    }
+
+    function validate() {
+      const name = fields.name.value.trim();
+      const email = fields.email.value.trim();
+      const message = fields.message.value.trim();
+
+      if (!name) return 'Please enter your full name.';
+      if (!email || !EMAIL_RE.test(email)) return 'Please enter a valid email address.';
+      if (!message || message.length < 10) return 'Please tell us a little more about how we can help.';
+      return null;
+    }
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const note = form.querySelector('.form-note');
-      if (form.checkValidity()) {
-        note.textContent = 'Received. We will be in touch shortly.';
+      if (submitting || succeeded) return; // stops double-click / repeat-click duplicates
+
+      // Honeypot: real visitors never fill this field (it's visually and
+      // programmatically hidden). If it has a value, this is almost certainly
+      // a bot — accept silently without hitting the database or sending mail.
+      if (fields.website.value.trim() !== '') {
+        setNote('Received. We will be in touch shortly.');
         form.reset();
-      } else {
-        note.textContent = 'Please fill in every required field.';
+        succeeded = true;
+        return;
+      }
+
+      const validationError = validate();
+      if (validationError) {
+        setNote(validationError, 'error');
+        const name = fields.name.value.trim();
+        const email = fields.email.value.trim();
+        let fieldToFocus = fields.name;
+        if (name) fieldToFocus = (email && EMAIL_RE.test(email)) ? fields.message : fields.email;
+        fieldToFocus.focus();
+        return;
+      }
+
+      if (SUPABASE_URL === 'YOUR_SUPABASE_PROJECT_URL' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY') {
+        setNote("We couldn't send your request. Please try again, or email us directly.", 'error');
+        console.error('Contact form: Supabase is not configured (SUPABASE_URL / SUPABASE_ANON_KEY unset).');
+        return;
+      }
+
+      submitting = true;
+      submitBtn.disabled = true;
+      submitBtn.setAttribute('aria-busy', 'true');
+      const originalLabel = submitBtn.textContent;
+      submitBtn.textContent = 'Sending...';
+      setNote('');
+
+      // Idempotency key: unique per submit attempt, and re-used across retries of
+      // the SAME attempt, so a flaky network retry can never create two rows.
+      const requestRef = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() :
+        `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+      const payload = {
+        request_ref: requestRef,
+        full_name: fields.name.value.trim(),
+        company: fields.company.value.trim() || null,
+        email: fields.email.value.trim(),
+        role: fields.role.value.trim() || null,
+        service_interest: fields.service.value || null,
+        message: fields.message.value.trim(),
+        source_page: window.location.href,
+      };
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/contact_submissions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            Prefer: 'return=minimal',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          const errText = await res.text().catch(() => '');
+          throw new Error(`Supabase insert failed: ${res.status} ${errText}`);
+        }
+
+        succeeded = true;
+        setNote('Thank you. Your request has been received. We’ll review the details and get back to you.');
+        form.reset();
+        submitBtn.textContent = originalLabel;
+        submitBtn.disabled = true; // prevent an accidental resubmit of the same successful request
+      } catch (err) {
+        console.error('Contact form submission failed:', err); // technical detail logged, never shown to the visitor
+        setNote("We couldn't send your request. Please try again.", 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalLabel;
+      } finally {
+        submitting = false;
+        submitBtn.removeAttribute('aria-busy');
       }
     });
   }

@@ -270,9 +270,19 @@ h1,h2,h3{font-family:var(--font-serif);font-weight:400;letter-spacing:-.01em;tex
   padding:9px 0;font-family:var(--font-sans);font-size:15px;color:var(--text-on-dark);
   transition:border-color .2s var(--ease);
 }
-.field input:focus,.field textarea:focus{outline:none;border-bottom-color:var(--gold-100);}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-bottom-color:var(--gold-100);}
 .field textarea{resize:vertical;min-height:84px;}
+.field select{
+  width:100%;background:var(--black-100);border:none;border-bottom:1px solid var(--border-subtle-dark);
+  padding:9px 0;font-family:var(--font-sans);font-size:15px;color:var(--text-on-dark);
+  transition:border-color .2s var(--ease);
+}
+.field-hint{font-size:11px;color:var(--text-on-dark-muted);margin-top:6px;}
+.field--honeypot{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;}
 .form-note{margin-top:14px;font-size:12px;color:var(--gold-100);min-height:1em;}
+.form-note[data-state="error"]{color:#e0937a;}
+.form-privacy{margin-top:10px;font-size:11px;line-height:1.5;color:var(--text-on-dark-muted);}
+.btn--gold:disabled{opacity:.6;cursor:not-allowed;}
 
 /* ===== footer ===== */
 .site-footer{
