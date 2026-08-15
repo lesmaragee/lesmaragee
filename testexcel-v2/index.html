@@ -28,28 +28,40 @@
 
 <main id="main" tabindex="-1">
 
-  <!-- ============ HERO ============ -->
-  <section class="hero" id="top">
-    <div class="wrap">
-      <div class="hero-grid">
-        <div>
-          <p class="eyebrow"><span class="idx">01</span> Payments QA, quality driven</p>
-          <h1 class="hero-headline" data-reveal>We find what breaks,<br>before your customers do<span class="accent">.</span></h1>
-          <p class="hero-sub" data-reveal>Payments QA, scheme compliance, test automation and release assurance for banks, fintechs and payment providers. We manufacture proof, not opinions.</p>
-          <div class="hero-ctas" data-reveal>
-            <a href="#contact" class="btn btn--gold">Talk to TestExcel</a>
-            <a href="#evidence" class="btn btn--ghost-dark">See the evidence</a>
-          </div>
-          <p class="hero-credibility" data-reveal>Evidence before opinion. Trusted across payments, fintech and regulated banking.</p>
-        </div>
+  <!-- ============ HERO (scroll-scrubbed) ============ -->
+  <section class="hero-scrub" id="top">
+    <div class="hero-stage" id="heroStage">
 
-        <div class="stamp-panel" data-reveal>
-          <img src="assets/logo/testexcel-stamp-dark-bg.png" alt="TestExcel verified stamp">
-          <div class="stamp-caption">Release: verified</div>
-          <div class="stamp-sub">The stamp appears only where something has been checked, decided or confirmed. Never a decoration.</div>
+      <div class="hero-media" aria-hidden="true">
+        <img class="hero-poster" id="heroPoster" src="assets/video/hero-poster.jpg" alt="">
+        <video class="hero-video" id="heroVideo" preload="none" muted playsinline tabindex="-1"></video>
+        <div class="hero-scrim"></div>
+      </div>
+
+      <div class="wrap hero-content">
+        <div class="hero-copy">
+          <div class="band" data-band="0,0.34">
+            <p class="eyebrow"><span class="idx">01</span> Payments QA, quality driven</p>
+            <h1 class="hero-headline">We find what breaks,<br>before your customers do<span class="accent">.</span></h1>
+          </div>
+
+          <div class="band" data-band="0.42,0.86">
+            <p class="hero-sub">Payments QA, scheme compliance, test automation and release assurance for banks, fintechs and payment providers. We manufacture proof, not opinions.</p>
+            <div class="hero-ctas">
+              <a href="#contact" class="btn btn--gold">Talk to TestExcel</a>
+              <a href="#evidence" class="btn btn--ghost-dark">See the evidence</a>
+            </div>
+            <p class="hero-credibility">Evidence before opinion. Trusted across payments, fintech and regulated banking.</p>
+          </div>
         </div>
       </div>
 
+    </div>
+  </section>
+
+  <!-- ============ TRUST INDICATORS ============ -->
+  <section class="section trust-indicators">
+    <div class="wrap">
       <div class="trust-row" data-reveal-stagger>
         <div class="trust-item"><div class="n">01</div><div class="t">120 payment releases tested</div></div>
         <div class="trust-item"><div class="n">02</div><div class="t">40 scheme certifications supported</div></div>
