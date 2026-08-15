@@ -27,6 +27,22 @@
     revealTargets.forEach(el => observer.observe(el));
   }
 
+  // ===== Service card glow: re-fires every time a card scrolls into view =====
+  const glowCards = document.querySelectorAll('.service-card');
+  if (glowCards.length && !reducedMotion) {
+    const glowObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          el.classList.remove('card-glow');
+          void el.offsetWidth; // force reflow so the animation restarts every time
+          el.classList.add('card-glow');
+        }
+      });
+    }, { threshold: 0.3 });
+    glowCards.forEach(el => glowObserver.observe(el));
+  }
+
   // ===== Hero scroll-scrub engine =====
   initHeroScrub();
 
