@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /testexcel-v2/
+Disallow: /testexcel/
+Disallow: /testexcel-3d/
+Disallow: /testexcel-brand-preview/
+Disallow: /skills/
+
+Sitemap: https://lesmaragee.github.io/lesmaragee/sitemap.xml
