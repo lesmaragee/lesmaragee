@@ -113,7 +113,7 @@ h1,h2,h3{font-family:var(--font-serif);font-weight:400;letter-spacing:-.01em;tex
   padding-top:16px;padding-bottom:16px;
 }
 .logo-mark{display:flex;align-items:center;gap:10px;flex-shrink:0;}
-.logo-mark img{height:30px;width:30px;flex-shrink:0;}
+.logo-mark img{height:42px;width:42px;flex-shrink:0;}
 .logo-word{font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;}
 .nav-links{display:flex;gap:clamp(16px,2.4vw,36px);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-on-dark-muted);white-space:nowrap;}
 .nav-links a{transition:color .2s var(--ease);}
