@@ -130,7 +130,7 @@ h1,h2,h3{font-family:var(--font-serif);font-weight:400;letter-spacing:-.01em;tex
 .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center;}
 @media (max-width:900px){.hero-grid{grid-template-columns:1fr;gap:32px;}}
 
-.hero-scrub{position:relative;height:400vh;background:var(--black-100);}
+.hero-scrub{position:relative;height:150vh;background:var(--black-100);}
 .hero-stage{position:sticky;top:0;height:100vh;min-height:560px;overflow:hidden;display:flex;align-items:center;}
 
 .hero-media{position:absolute;inset:0;z-index:0;background:var(--black-100);}
