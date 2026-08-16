@@ -253,16 +253,15 @@
     applyHeroMode();
   }
 
-  // ===== Contact form: validated, persisted to Supabase, one row per submission =====
+  // ===== Contact form: validated, persisted via TestExcel's own API, one row per submission =====
   //
-  // SUPABASE_URL and SUPABASE_ANON_KEY are safe to ship in frontend code — this is
-  // Supabase's own security model. The anon key can only do what Row Level Security
-  // in supabase/schema.sql allows: insert a new row into contact_submissions. It
-  // cannot read, update or delete existing leads. Fill these in once the Supabase
-  // project from supabase/schema.sql exists; until then the form fails closed with
-  // a clear, honest error rather than pretending to succeed.
-  const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL'; // e.g. https://xxxxx.supabase.co
-  const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+  // The frontend never talks to MySQL directly — it POSTs to this API endpoint,
+  // which is the only thing holding database/SMTP credentials (server/index.js,
+  // configured entirely through Hostinger's environment-variable settings, never
+  // in this file or the repo). Fill in the real endpoint once the API is
+  // deployed; until then the form fails closed with a clear, honest error
+  // rather than pretending to succeed.
+  const CONTACT_API_URL = 'YOUR_CONTACT_API_URL'; // e.g. https://api.testexcel.example/api/contact
 
   const form = document.getElementById('contactForm');
   if (form) {
@@ -325,9 +324,9 @@
         return;
       }
 
-      if (SUPABASE_URL === 'YOUR_SUPABASE_PROJECT_URL' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY') {
+      if (CONTACT_API_URL === 'YOUR_CONTACT_API_URL') {
         setNote("We couldn't send your request. Please try again, or email us directly.", 'error');
-        console.error('Contact form: Supabase is not configured (SUPABASE_URL / SUPABASE_ANON_KEY unset).');
+        console.error('Contact form: CONTACT_API_URL is not configured.');
         return;
       }
 
@@ -339,9 +338,20 @@
       setNote('');
 
       // Idempotency key: unique per submit attempt, and re-used across retries of
-      // the SAME attempt, so a flaky network retry can never create two rows.
-      const requestRef = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() :
-        `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      // the SAME attempt, so a flaky network retry can never create two rows
+      // (the API enforces this server-side too, via a UNIQUE constraint).
+      function uuidv4() {
+        if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+        // Fallback for older browsers: still a valid v4-shaped UUID, just
+        // using Math.random instead of a CSPRNG — fine for an idempotency
+        // key, which only needs to be unique, not unguessable.
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+          const r = (Math.random() * 16) | 0;
+          const v = c === 'x' ? r : (r & 0x3) | 0x8;
+          return v.toString(16);
+        });
+      }
+      const requestRef = uuidv4();
 
       const payload = {
         request_ref: requestRef,
@@ -355,20 +365,15 @@
       };
 
       try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/contact_submissions`, {
+        const res = await fetch(CONTACT_API_URL, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            apikey: SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-            Prefer: 'return=minimal',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
 
-        if (!res.ok) {
-          const errText = await res.text().catch(() => '');
-          throw new Error(`Supabase insert failed: ${res.status} ${errText}`);
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || data.ok === false) {
+          throw new Error(`Contact API error: ${res.status} ${data.error || ''}`);
         }
 
         succeeded = true;
