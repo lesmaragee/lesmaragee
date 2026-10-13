@@ -396,4 +396,141 @@
       }
     });
   }
+
+  // ===== Technology Talent & Resource Augmentation: client enquiry form =====
+  // Same validated/idempotent/honest-error submission pattern as the main
+  // contact form above, posted through the same CONTACT_API_URL. Fields
+  // specific to this form (seniority, duration, location, start date,
+  // notes) are folded into the shared API's "message" field as readable
+  // text, since the backend schema is intentionally one generic lead shape
+  // rather than a separate table per service.
+  const talentForm = document.getElementById('talentForm');
+  if (talentForm) {
+    const note = talentForm.querySelector('.form-note');
+    const submitBtn = talentForm.querySelector('button[type="submit"]');
+    const fields = {
+      company: talentForm.querySelector('#t-company'),
+      name: talentForm.querySelector('#t-name'),
+      email: talentForm.querySelector('#t-email'),
+      role: talentForm.querySelector('#t-role'),
+      count: talentForm.querySelector('#t-count'),
+      skills: talentForm.querySelector('#t-skills'),
+      seniority: talentForm.querySelector('#t-seniority'),
+      duration: talentForm.querySelector('#t-duration'),
+      location: talentForm.querySelector('#t-location'),
+      start: talentForm.querySelector('#t-start'),
+      notes: talentForm.querySelector('#t-notes'),
+      website: talentForm.querySelector('#t-website'), // honeypot
+    };
+
+    let submitting = false;
+    let succeeded = false;
+    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    function setNote(text, state) {
+      note.textContent = text;
+      if (state) note.setAttribute('data-state', state);
+      else note.removeAttribute('data-state');
+    }
+
+    function validate() {
+      if (!fields.company.value.trim()) return 'Please enter your company name.';
+      if (!fields.name.value.trim()) return 'Please enter a contact name.';
+      const email = fields.email.value.trim();
+      if (!email || !EMAIL_RE.test(email)) return 'Please enter a valid business email address.';
+      if (!fields.role.value.trim()) return 'Please tell us which technology role you need.';
+      return null;
+    }
+
+    function uuidv4() {
+      if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        const r = (Math.random() * 16) | 0;
+        const v = c === 'x' ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      });
+    }
+
+    function buildMessage() {
+      const lines = [`Technology role required: ${fields.role.value.trim()}`];
+      if (fields.count.value.trim()) lines.push(`Number of resources: ${fields.count.value.trim()}`);
+      if (fields.skills.value.trim()) lines.push(`Required skills: ${fields.skills.value.trim()}`);
+      if (fields.seniority.value) lines.push(`Seniority level: ${fields.seniority.value}`);
+      if (fields.location.value) lines.push(`Remote, hybrid or on-site: ${fields.location.value}`);
+      if (fields.start.value) lines.push(`Expected start date: ${fields.start.value}`);
+      if (fields.notes.value.trim()) lines.push(`Additional requirements: ${fields.notes.value.trim()}`);
+      return lines.join('\n');
+    }
+
+    talentForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (submitting || succeeded) return;
+
+      if (fields.website.value.trim() !== '') {
+        setNote('Received. We will be in touch shortly.');
+        talentForm.reset();
+        succeeded = true;
+        return;
+      }
+
+      const validationError = validate();
+      if (validationError) {
+        setNote(validationError, 'error');
+        return;
+      }
+
+      if (CONTACT_API_URL === 'YOUR_CONTACT_API_URL') {
+        setNote("We couldn't send your request. Please try again, or email us directly.", 'error');
+        console.error('Talent enquiry form: CONTACT_API_URL is not configured.');
+        return;
+      }
+
+      submitting = true;
+      submitBtn.disabled = true;
+      submitBtn.setAttribute('aria-busy', 'true');
+      const originalLabel = submitBtn.textContent;
+      submitBtn.textContent = 'Sending...';
+      setNote('');
+
+      const payload = {
+        request_ref: uuidv4(),
+        full_name: fields.name.value.trim(),
+        company: fields.company.value.trim(),
+        email: fields.email.value.trim(),
+        role: fields.role.value.trim(),
+        service_interest: 'Technology Talent & Resource Augmentation',
+        budget: null,
+        timeline: fields.duration.value || null,
+        message: buildMessage(),
+        source_page: window.location.href,
+      };
+
+      try {
+        const res = await fetch(CONTACT_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || data.ok === false) {
+          throw new Error(`Contact API error: ${res.status} ${data.error || ''}`);
+        }
+
+        succeeded = true;
+        setNote('Thank you. Your request has been received. We’ll review the details and get back to you.');
+        talentForm.reset();
+        submitBtn.textContent = originalLabel;
+        submitBtn.disabled = true;
+      } catch (err) {
+        console.error('Talent enquiry form submission failed:', err);
+        setNote("We couldn't send your request. Please try again.", 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalLabel;
+      } finally {
+        submitting = false;
+        submitBtn.removeAttribute('aria-busy');
+      }
+    });
+  }
 })();

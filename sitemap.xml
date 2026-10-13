@@ -37,6 +37,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://lesmaragee.github.io/lesmaragee/testexcel-v2/services/technology-talent.html</loc>
+    <lastmod>2026-10-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://lesmaragee.github.io/lesmaragee/testexcel-v2/insights/index.html</loc>
     <lastmod>2026-10-13</lastmod>
     <changefreq>weekly</changefreq>
