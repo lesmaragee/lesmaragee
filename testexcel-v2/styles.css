@@ -254,6 +254,7 @@ h1,h2,h3{font-family:var(--font-serif);font-weight:400;letter-spacing:-.01em;tex
 .case-card .case-verdict img{width:22px;height:22px;}
 .case-card .case-verdict span{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-120);}
 .case-title{font-family:var(--font-serif);font-size:20px;}
+.case-meta{margin-top:6px;font-size:11px;letter-spacing:.04em;color:var(--text-on-light-muted);text-transform:uppercase;}
 .case-desc{margin-top:10px;font-size:14px;color:var(--text-on-light-muted);line-height:1.55;}
 
 /* ===== final CTA / contact ===== */
