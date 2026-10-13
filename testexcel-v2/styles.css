@@ -84,24 +84,32 @@ h1,h2,h3{font-family:var(--font-serif);font-weight:400;letter-spacing:-.01em;tex
 [data-reveal-stagger].is-visible>*:nth-child(10){transition-delay:630ms;}
 [data-reveal-stagger].is-visible>*:nth-child(n+11){transition-delay:700ms;}
 
-/* a bold gold verdict-glow as each service card scrolls into view, on a pseudo-element
+/* a bold, warm verdict-glow as each service card scrolls into view, on a pseudo-element
    with the glow fixed at full strength, animating only opacity (compositor-friendly,
-   per the motion-system rule: animate transform/opacity, put glow shadows on a pseudo-element) */
+   per the motion-system rule: animate transform/opacity, put glow shadows on a pseudo-element).
+   Flickers like a flame on its way in rather than a single smooth fade. */
 @keyframes cardGlow{
   0%{opacity:0;}
-  35%{opacity:1;}
+  12%{opacity:1;}
+  24%{opacity:.5;}
+  36%{opacity:.95;}
+  50%{opacity:.45;}
+  65%{opacity:.75;}
   100%{opacity:0;}
 }
 .service-card{position:relative;}
 .service-card::before{
   content:'';
   position:absolute;
-  inset:-3px;
-  box-shadow:0 0 46px 8px rgba(184,149,66,.6);
+  inset:-4px;
+  box-shadow:
+    0 0 80px 18px rgba(201,130,40,.55),
+    0 0 46px 10px rgba(184,149,66,.85),
+    0 0 20px 4px rgba(255,200,120,.9);
   opacity:0;
   pointer-events:none;
 }
-.service-card.card-glow::before{animation:cardGlow 1.3s ease-out;}
+.service-card.card-glow::before{animation:cardGlow 1.8s ease-out;}
 
 /* ===== header ===== */
 .site-header{
