@@ -247,7 +247,7 @@ h1,h2,h3{font-family:var(--font-serif);font-weight:400;letter-spacing:-.01em;tex
 .service-card{background:var(--black-100);padding:32px 28px;min-height:220px;display:flex;flex-direction:column;justify-content:space-between;transition:background .3s var(--ease),transform .3s var(--ease),box-shadow .3s var(--ease);}
 .service-card:hover{background:#1a1a1a;transform:translateY(-5px);box-shadow:0 18px 40px -20px rgba(0,0,0,.6);}
 .service-idx{font-size:11px;color:var(--text-on-dark-muted);letter-spacing:.08em;font-variant-numeric:tabular-nums;}
-.service-title{font-family:var(--font-serif);font-size:22px;margin-top:16px;font-weight:400;}
+.service-title{font-family:var(--font-serif);font-size:22px;margin-top:16px;font-weight:400;color:var(--text-on-dark);}
 .service-desc{margin-top:10px;font-size:13.5px;color:var(--text-on-dark-muted);line-height:1.55;}
 .service-link{display:inline-block;margin-top:14px;font-size:12px;letter-spacing:.04em;color:var(--gold-100);transition:color .2s var(--ease);}
 .service-link:hover{color:var(--gold-120);}
