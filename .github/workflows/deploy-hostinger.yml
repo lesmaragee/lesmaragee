@@ -1,0 +1,70 @@
+name: Deploy TestExcel to Hostinger
+
+# Assumes a Hostinger VPS reachable over SSH, with:
+#   - the static site served from a directory Nginx/Apache points at
+#   - the Node API run via pm2 (process name: testexcel-contact-api)
+#
+# If you're on Hostinger's panel-managed Node.js hosting instead of a VPS,
+# this SSH+pm2 approach won't apply as-is — that product restarts its Node
+# app through hPanel's own UI/API rather than pm2, so the deploy step below
+# would need to be swapped for whatever Hostinger's own deploy hook expects.
+#
+# Required repo secrets (GitHub repo → Settings → Secrets and variables →
+# Actions → New repository secret). Configure these there, never in this
+# file or in chat:
+#   HOSTINGER_SSH_HOST      the VPS hostname/IP
+#   HOSTINGER_SSH_USER      the SSH user
+#   HOSTINGER_SSH_KEY       private key for that user (an SSH key generated
+#                           just for CI deploys, not your personal key)
+#   HOSTINGER_STATIC_PATH   absolute path the webserver serves, e.g.
+#                           /home/<user>/domains/testexcel.example/public_html
+#   HOSTINGER_API_PATH      absolute path the Node API runs from, e.g.
+#                           /home/<user>/apps/testexcel-contact-api
+#
+# Server-side secrets (DB password, SMTP password) are NOT set here — they
+# live only in server/.env on the VPS itself (see server/.env.example),
+# never in GitHub Actions and never in this repo.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'testexcel-v2/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy static frontend
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avz --delete --exclude=server
+          path: testexcel-v2/
+          remote_path: ${{ secrets.HOSTINGER_STATIC_PATH }}
+          remote_host: ${{ secrets.HOSTINGER_SSH_HOST }}
+          remote_user: ${{ secrets.HOSTINGER_SSH_USER }}
+          remote_key: ${{ secrets.HOSTINGER_SSH_KEY }}
+
+      - name: Deploy contact API
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avz --delete --exclude=node_modules --exclude=.env
+          path: testexcel-v2/server/
+          remote_path: ${{ secrets.HOSTINGER_API_PATH }}
+          remote_host: ${{ secrets.HOSTINGER_SSH_HOST }}
+          remote_user: ${{ secrets.HOSTINGER_SSH_USER }}
+          remote_key: ${{ secrets.HOSTINGER_SSH_KEY }}
+
+      - name: Install deps and restart API
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOSTINGER_SSH_HOST }}
+          username: ${{ secrets.HOSTINGER_SSH_USER }}
+          key: ${{ secrets.HOSTINGER_SSH_KEY }}
+          script: |
+            cd ${{ secrets.HOSTINGER_API_PATH }}
+            npm install --omit=dev
+            pm2 restart testexcel-contact-api || pm2 start index.js --name testexcel-contact-api
