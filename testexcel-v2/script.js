@@ -277,7 +277,7 @@
   // ===== Contact form: validated, persisted via TestExcel's own API, one row per submission =====
   //
   // The frontend never talks to MySQL directly; it POSTs to this API endpoint,
-  // which is the only thing holding database/SMTP credentials (server/index.js,
+  // which is the only thing holding database/SMTP credentials (server.js,
   // configured entirely through Hostinger's environment-variable settings, never
   // in this file or the repo). Relative path: this file is served by the same
   // Node app that exposes /api/contact, so no absolute host needs to be known

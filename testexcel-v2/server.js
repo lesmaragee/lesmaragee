@@ -19,11 +19,11 @@ const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '';
 app.disable('x-powered-by');
 app.use(express.json({ limit: '20kb' })); // small cap: this endpoint only ever receives a short form
 
-// Serve the static site itself (one directory up from this file) so a single
-// Node process covers both the website and its contact-form API — the
-// deployment platform runs this file as the app's entry point and expects it
-// to be the whole service, not just a background API.
-app.use(express.static(path.join(__dirname, '..')));
+// Serve the static site itself (this file sits alongside index.html etc. at
+// the project root) so a single Node process covers both the website and its
+// contact-form API — the deployment platform runs this file as the app's
+// entry point and expects it to be the whole service, not just a background API.
+app.use(express.static(__dirname, { index: 'index.html' }));
 app.use(
   cors({
     origin: ALLOWED_ORIGIN || false, // fail closed if unset, rather than silently allow any origin

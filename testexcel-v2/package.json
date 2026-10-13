@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "description": "TestExcel contact/service-request form API: validates, persists to MySQL, emails a notification.",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node server.js"
   },
   "engines": {
     "node": ">=18"
