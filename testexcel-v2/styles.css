@@ -133,14 +133,16 @@ h1,h2,h3{font-family:var(--font-serif);font-weight:400;letter-spacing:-.01em;tex
 
 .nav-services{position:relative;}
 .nav-dropdown{
-  position:absolute;top:calc(100% + 18px);left:50%;
+  position:absolute;top:100%;left:50%;padding-top:18px;
   transform:translateX(-50%) translateY(6px);
-  background:rgba(17,17,17,.97);
-  border:1px solid var(--border-subtle-dark);border-radius:var(--radius-sm);
-  padding:8px 0;min-width:260px;
   opacity:0;visibility:hidden;pointer-events:none;
   transition:opacity .2s var(--ease),transform .2s var(--ease);
   z-index:110;
+}
+.nav-dropdown-inner{
+  background:rgba(17,17,17,.97);
+  border:1px solid var(--border-subtle-dark);border-radius:var(--radius-sm);
+  padding:8px 0;min-width:260px;
 }
 .nav-services:hover .nav-dropdown,
 .nav-services:focus-within .nav-dropdown{
