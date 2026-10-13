@@ -279,10 +279,12 @@
   // The frontend never talks to MySQL directly; it POSTs to this API endpoint,
   // which is the only thing holding database/SMTP credentials (server/index.js,
   // configured entirely through Hostinger's environment-variable settings, never
-  // in this file or the repo). Fill in the real endpoint once the API is
-  // deployed; until then the form fails closed with a clear, honest error
-  // rather than pretending to succeed.
-  const CONTACT_API_URL = 'YOUR_CONTACT_API_URL'; // e.g. https://api.testexcel.example/api/contact
+  // in this file or the repo). Relative path: this file is served by the same
+  // Node app that exposes /api/contact, so no absolute host needs to be known
+  // here. On a host that doesn't run that Node app (e.g. GitHub Pages) the
+  // fetch below simply 404s and the existing try/catch shows the same honest
+  // "couldn't send" message rather than a false success.
+  const CONTACT_API_URL = '/api/contact';
 
   const form = document.getElementById('contactForm');
   if (form) {
@@ -344,12 +346,6 @@
         let fieldToFocus = fields.name;
         if (name) fieldToFocus = (email && EMAIL_RE.test(email)) ? fields.message : fields.email;
         fieldToFocus.focus();
-        return;
-      }
-
-      if (CONTACT_API_URL === 'YOUR_CONTACT_API_URL') {
-        setNote("We couldn't send your request. Please try again, or email us directly.", 'error');
-        console.error('Contact form: CONTACT_API_URL is not configured.');
         return;
       }
 
@@ -500,11 +496,6 @@
         return;
       }
 
-      if (CONTACT_API_URL === 'YOUR_CONTACT_API_URL') {
-        setNote("We couldn't send your request. Please try again, or email us directly.", 'error');
-        console.error('Talent enquiry form: CONTACT_API_URL is not configured.');
-        return;
-      }
 
       submitting = true;
       submitBtn.disabled = true;
