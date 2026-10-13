@@ -11,6 +11,27 @@
     onScroll();
   }
 
+  // ===== Scroll progress bar =====
+  const scrollProgress = document.getElementById('scrollProgress');
+  if (scrollProgress) {
+    const updateProgress = () => {
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0;
+      scrollProgress.style.width = `${Math.min(100, Math.max(0, pct))}%`;
+    };
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    window.addEventListener('resize', updateProgress, { passive: true });
+    updateProgress();
+  }
+
+  // ===== Hero scroll cue: fades once the visitor starts scrolling =====
+  const scrollCue = document.getElementById('scrollCue');
+  if (scrollCue) {
+    const updateCue = () => scrollCue.classList.toggle('is-hidden', window.scrollY > 60);
+    window.addEventListener('scroll', updateCue, { passive: true });
+    updateCue();
+  }
+
   // ===== Scroll reveal (transform + opacity only) =====
   const revealTargets = document.querySelectorAll('[data-reveal], [data-reveal-stagger]');
   if (reducedMotion) {
