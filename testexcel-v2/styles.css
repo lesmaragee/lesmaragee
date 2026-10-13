@@ -213,6 +213,9 @@ h1,h2,h3{font-family:var(--font-serif);font-weight:400;letter-spacing:-.01em;tex
 .service-idx{font-size:11px;color:var(--text-on-dark-muted);letter-spacing:.08em;font-variant-numeric:tabular-nums;}
 .service-title{font-family:var(--font-serif);font-size:22px;margin-top:16px;font-weight:400;}
 .service-desc{margin-top:10px;font-size:13.5px;color:var(--text-on-dark-muted);line-height:1.55;}
+.service-link{display:inline-block;margin-top:14px;font-size:12px;letter-spacing:.04em;color:var(--gold-100);transition:color .2s var(--ease);}
+.service-link:hover{color:var(--gold-120);}
+.case-grid .service-link{color:var(--gold-120);}
 
 /* ===== expertise pills ===== */
 .pill-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:36px;}

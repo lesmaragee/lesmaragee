@@ -112,6 +112,8 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
       email: body.email.trim(),
       role: body.role ? String(body.role).trim().slice(0, 200) : null,
       service_interest: body.service_interest ? String(body.service_interest).trim().slice(0, 120) : null,
+      budget: body.budget ? String(body.budget).trim().slice(0, 60) : null,
+      timeline: body.timeline ? String(body.timeline).trim().slice(0, 60) : null,
       message: body.message.trim(),
       source_page: body.source_page ? String(body.source_page).trim().slice(0, 500) : null,
     };
@@ -125,8 +127,8 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
     try {
       const [result] = await db.execute(
         `INSERT INTO contact_submissions
-           (request_ref, full_name, company, email, role, service_interest, message, source_page)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+           (request_ref, full_name, company, email, role, service_interest, budget, timeline, message, source_page)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           record.request_ref,
           record.full_name,
@@ -134,6 +136,8 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
           record.email,
           record.role,
           record.service_interest,
+          record.budget,
+          record.timeline,
           record.message,
           record.source_page,
         ]
@@ -165,6 +169,8 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
             `Email: ${record.email}`,
             `Role: ${record.role || '-'}`,
             `Service interest: ${record.service_interest || '-'}`,
+            `Budget: ${record.budget || '-'}`,
+            `Timeline: ${record.timeline || '-'}`,
             '',
             'Message:',
             record.message,
@@ -180,6 +186,8 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
               <li><strong>Email:</strong> ${escapeHtml(record.email)}</li>
               <li><strong>Role:</strong> ${escapeHtml(record.role || '-')}</li>
               <li><strong>Service interest:</strong> ${escapeHtml(record.service_interest || '-')}</li>
+              <li><strong>Budget:</strong> ${escapeHtml(record.budget || '-')}</li>
+              <li><strong>Timeline:</strong> ${escapeHtml(record.timeline || '-')}</li>
             </ul>
             <p><strong>Message:</strong><br>${escapeHtml(record.message).replace(/\n/g, '<br>')}</p>
             <p style="color:#666;font-size:12px;">Request ID: ${insertedId}<br>Request ref: ${escapeHtml(record.request_ref)}</p>

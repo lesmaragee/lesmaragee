@@ -9,6 +9,8 @@ CREATE TABLE IF NOT EXISTS contact_submissions (
   email            VARCHAR(320) NOT NULL,
   role             VARCHAR(200) NULL,
   service_interest VARCHAR(120) NULL,
+  budget           VARCHAR(60)  NULL,
+  timeline         VARCHAR(60)  NULL,
   message          TEXT         NOT NULL,
   source_page      VARCHAR(500) NULL,
   status           ENUM('New', 'Contacted', 'In Progress', 'Closed') NOT NULL DEFAULT 'New',

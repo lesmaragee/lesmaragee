@@ -273,6 +273,8 @@
       email: form.querySelector('#email'),
       role: form.querySelector('#role'),
       service: form.querySelector('#service'),
+      budget: form.querySelector('#budget'),
+      timeline: form.querySelector('#timeline'),
       message: form.querySelector('#message'),
       website: form.querySelector('#website'), // honeypot
     };
@@ -360,6 +362,8 @@
         email: fields.email.value.trim(),
         role: fields.role.value.trim() || null,
         service_interest: fields.service.value || null,
+        budget: fields.budget.value || null,
+        timeline: fields.timeline.value || null,
         message: fields.message.value.trim(),
         source_page: window.location.href,
       };
