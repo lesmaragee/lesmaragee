@@ -255,7 +255,7 @@
 
   // ===== Contact form: validated, persisted via TestExcel's own API, one row per submission =====
   //
-  // The frontend never talks to MySQL directly — it POSTs to this API endpoint,
+  // The frontend never talks to MySQL directly; it POSTs to this API endpoint,
   // which is the only thing holding database/SMTP credentials (server/index.js,
   // configured entirely through Hostinger's environment-variable settings, never
   // in this file or the repo). Fill in the real endpoint once the API is
@@ -307,7 +307,7 @@
 
       // Honeypot: real visitors never fill this field (it's visually and
       // programmatically hidden). If it has a value, this is almost certainly
-      // a bot — accept silently without hitting the database or sending mail.
+      // a bot, so accept silently without hitting the database or sending mail.
       if (fields.website.value.trim() !== '') {
         setNote('Received. We will be in touch shortly.');
         form.reset();
@@ -345,7 +345,7 @@
       function uuidv4() {
         if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
         // Fallback for older browsers: still a valid v4-shaped UUID, just
-        // using Math.random instead of a CSPRNG — fine for an idempotency
+        // using Math.random instead of a CSPRNG, which is fine for an idempotency
         // key, which only needs to be unique, not unguessable.
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
           const r = (Math.random() * 16) | 0;
