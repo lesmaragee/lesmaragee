@@ -97,6 +97,32 @@ function validate(body) {
   return null;
 }
 
+const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY || '';
+
+async function verifyRecaptcha(token, remoteip) {
+  if (!RECAPTCHA_SECRET_KEY) {
+    // Fail closed: if the secret isn't configured, treat every submission as
+    // unverified rather than silently letting spam through unchecked.
+    console.error('RECAPTCHA_SECRET_KEY is not configured — rejecting submission.');
+    return false;
+  }
+  if (!token) return false;
+  try {
+    const params = new URLSearchParams({ secret: RECAPTCHA_SECRET_KEY, response: token });
+    if (remoteip) params.set('remoteip', remoteip);
+    const res = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString(),
+    });
+    const data = await res.json();
+    return data.success === true;
+  } catch (err) {
+    console.error('reCAPTCHA verification request failed:', err);
+    return false;
+  }
+}
+
 app.post('/api/contact', contactLimiter, async (req, res) => {
   try {
     const body = req.body || {};
@@ -105,6 +131,11 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
     // silently without touching the database or sending mail.
     if (String(body.website || '').trim() !== '') {
       return res.json({ ok: true });
+    }
+
+    const recaptchaOk = await verifyRecaptcha(body.recaptcha_token, req.ip);
+    if (!recaptchaOk) {
+      return res.status(400).json({ ok: false, error: 'reCAPTCHA verification failed. Please try again.' });
     }
 
     const validationError = validate(body);

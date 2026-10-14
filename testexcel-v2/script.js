@@ -349,6 +349,15 @@
         return;
       }
 
+      // reCAPTCHA: require a completed challenge before hitting the API. Falls
+      // back to "not configured" rather than silently skipping the check if
+      // the script failed to load or the site key is still the placeholder.
+      const recaptchaToken = (typeof grecaptcha !== 'undefined') ? grecaptcha.getResponse() : '';
+      if (!recaptchaToken) {
+        setNote('Please complete the reCAPTCHA challenge.', 'error');
+        return;
+      }
+
       submitting = true;
       submitBtn.disabled = true;
       submitBtn.setAttribute('aria-busy', 'true');
@@ -383,6 +392,7 @@
         timeline: fields.timeline.value || null,
         message: fields.message.value.trim(),
         source_page: window.location.href,
+        recaptcha_token: recaptchaToken,
       };
 
       try {
@@ -410,6 +420,9 @@
       } finally {
         submitting = false;
         submitBtn.removeAttribute('aria-busy');
+        // reCAPTCHA tokens are single-use and short-lived — always reset so a
+        // retry (or the next visitor on a shared session) gets a fresh challenge.
+        if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
       }
     });
   }
@@ -496,6 +509,11 @@
         return;
       }
 
+      const recaptchaToken = (typeof grecaptcha !== 'undefined') ? grecaptcha.getResponse() : '';
+      if (!recaptchaToken) {
+        setNote('Please complete the reCAPTCHA challenge.', 'error');
+        return;
+      }
 
       submitting = true;
       submitBtn.disabled = true;
@@ -515,6 +533,7 @@
         timeline: fields.duration.value || null,
         message: buildMessage(),
         source_page: window.location.href,
+        recaptcha_token: recaptchaToken,
       };
 
       try {
@@ -542,6 +561,7 @@
       } finally {
         submitting = false;
         submitBtn.removeAttribute('aria-busy');
+        if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
       }
     });
   }
