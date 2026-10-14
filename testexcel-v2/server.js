@@ -165,37 +165,37 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
       source_page: body.source_page ? String(body.source_page).trim().slice(0, 500) : null,
     };
 
-    // const db = getPool();
+    const db = getPool();
 
-    // // Idempotency: request_ref has a UNIQUE constraint. A duplicate insert
-    // // (double-click, retried request) hits ER_DUP_ENTRY below instead of
-    // // creating a second row — caught and treated as a success, not an error.
-    // let insertedId;
-    // try {
-    //   const [result] = await db.execute(
-    //     `INSERT INTO contact_submissions
-    //        (request_ref, full_name, company, email, role, service_interest, budget, timeline, message, source_page)
-    //      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    //     [
-    //       record.request_ref,
-    //       record.full_name,
-    //       record.company,
-    //       record.email,
-    //       record.role,
-    //       record.service_interest,
-    //       record.budget,
-    //       record.timeline,
-    //       record.message,
-    //       record.source_page,
-    //     ]
-    //   );
-    //   insertedId = result.insertId;
-    // } catch (err) {
-    //   if (err.code === 'ER_DUP_ENTRY') {
-    //     return res.json({ ok: true, duplicate: true });
-    //   }
-    //   throw err;
-    // }
+    // Idempotency: request_ref has a UNIQUE constraint. A duplicate insert
+    // (double-click, retried request) hits ER_DUP_ENTRY below instead of
+    // creating a second row — caught and treated as a success, not an error.
+    let insertedId;
+    try {
+      const [result] = await db.execute(
+        `INSERT INTO contact_submissions
+           (request_ref, full_name, company, email, role, service_interest, budget, timeline, message, source_page)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          record.request_ref,
+          record.full_name,
+          record.company,
+          record.email,
+          record.role,
+          record.service_interest,
+          record.budget,
+          record.timeline,
+          record.message,
+          record.source_page,
+        ]
+      );
+      insertedId = result.insertId;
+    } catch (err) {
+      if (err.code === 'ER_DUP_ENTRY') {
+        return res.json({ ok: true, duplicate: true });
+      }
+      throw err;
+    }
 
     // Email notification. If this fails, the lead is already safely
     // persisted — do not fail the whole request over a mail-provider hiccup,
