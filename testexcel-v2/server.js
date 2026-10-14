@@ -251,7 +251,7 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
     return res.json({ ok: true, id: insertedId });
   } catch (err) {
     console.error('Contact form submission failed:', err); // technical detail logged server-side only
-    return res.status(500).json({ ok: false, error: "We couldn't process your request. Please try again." + err});
+    return res.status(500).json({ ok: false, error: "We couldn't process your request. Please try again."});
   }
 });
 
