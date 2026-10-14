@@ -98,15 +98,21 @@ function validate(body) {
 }
 
 const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY || '';
+const RECAPTCHA_SCORE_THRESHOLD = Number(process.env.RECAPTCHA_SCORE_THRESHOLD) || 0.5;
+const RECAPTCHA_ALLOWED_ACTIONS = new Set(['contact_form', 'talent_form']);
 
-async function verifyRecaptcha(token, remoteip) {
+// reCAPTCHA v3 returns a 0.0–1.0 score (likely bot -> likely human) and the
+// action name the token was requested for, instead of a pass/fail checkbox
+// result — so verification here means checking success, a real/expected
+// action, and a score at or above the threshold, not just "was it submitted."
+async function verifyRecaptcha(token, action, remoteip) {
   if (!RECAPTCHA_SECRET_KEY) {
     // Fail closed: if the secret isn't configured, treat every submission as
     // unverified rather than silently letting spam through unchecked.
     console.error('RECAPTCHA_SECRET_KEY is not configured — rejecting submission.');
     return false;
   }
-  if (!token) return false;
+  if (!token || !RECAPTCHA_ALLOWED_ACTIONS.has(action)) return false;
   try {
     const params = new URLSearchParams({ secret: RECAPTCHA_SECRET_KEY, response: token });
     if (remoteip) params.set('remoteip', remoteip);
@@ -116,7 +122,10 @@ async function verifyRecaptcha(token, remoteip) {
       body: params.toString(),
     });
     const data = await res.json();
-    return data.success === true;
+    if (data.success !== true) return false;
+    if (data.action !== action) return false; // token requested for a different action than submitted
+    if (typeof data.score !== 'number' || data.score < RECAPTCHA_SCORE_THRESHOLD) return false;
+    return true;
   } catch (err) {
     console.error('reCAPTCHA verification request failed:', err);
     return false;
@@ -133,7 +142,7 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
       return res.json({ ok: true });
     }
 
-    const recaptchaOk = await verifyRecaptcha(body.recaptcha_token, req.ip);
+    const recaptchaOk = await verifyRecaptcha(body.recaptcha_token, body.recaptcha_action, req.ip);
     if (!recaptchaOk) {
       return res.status(400).json({ ok: false, error: 'reCAPTCHA verification failed. Please try again.' });
     }
