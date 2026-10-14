@@ -91,7 +91,7 @@ function validate(body) {
 
   if (!fullName) return 'Full name is required.';
   if (!email || !EMAIL_RE.test(email)) return 'A valid email address is required.';
-  if (!message || message.length < 10) return 'Please provide a bit more detail in your message.';
+  if (!message || message.length < 3) return 'Please provide a bit more detail in your message.';
   if (message.length > 5000) return 'Message is too long.';
   if (!requestRef || !UUID_RE.test(requestRef)) return 'Invalid request.';
   return null;
