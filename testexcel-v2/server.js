@@ -224,8 +224,7 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
             'Message:',
             record.message,
             '',
-            `Request ID: ${insertedId}`,
-            `Request ref: ${record.request_ref}`,
+            `Request ID: ${record.request_ref}`,
           ].join('\n'),
           html: `
             <h2>New TestExcel enquiry</h2>
@@ -239,7 +238,7 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
               <li><strong>Timeline:</strong> ${escapeHtml(record.timeline || '-')}</li>
             </ul>
             <p><strong>Message:</strong><br>${escapeHtml(record.message).replace(/\n/g, '<br>')}</p>
-            <p style="color:#666;font-size:12px;">Request ID: ${insertedId}<br>Request ref: ${escapeHtml(record.request_ref)}</p>
+            <p style="color:#666;font-size:12px;">Request ID: ${escapeHtml(record.request_ref)}</p>
           `,
         });
       } else {
