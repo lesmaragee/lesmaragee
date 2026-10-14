@@ -289,7 +289,7 @@
   // reCAPTCHA v3: invisible, score-based — no checkbox, no user-facing
   // challenge. A fresh token is requested right before each submit via
   // grecaptcha.execute(), scoped to an action name the server checks.
-  const RECAPTCHA_SITE_KEY = 'YOUR_RECAPTCHA_SITE_KEY';
+  const RECAPTCHA_SITE_KEY = '6Le63O4tAAAAAFD84KXo6JIex3n8B7RqyFlTER3Q';
   function getRecaptchaToken(action) {
     return new Promise((resolve, reject) => {
       if (typeof grecaptcha === 'undefined' || !grecaptcha.execute) {
