@@ -286,6 +286,22 @@
   // "couldn't send" message rather than a false success.
   const CONTACT_API_URL = '/api/contact';
 
+  // reCAPTCHA v3: invisible, score-based — no checkbox, no user-facing
+  // challenge. A fresh token is requested right before each submit via
+  // grecaptcha.execute(), scoped to an action name the server checks.
+  const RECAPTCHA_SITE_KEY = 'YOUR_RECAPTCHA_SITE_KEY';
+  function getRecaptchaToken(action) {
+    return new Promise((resolve, reject) => {
+      if (typeof grecaptcha === 'undefined' || !grecaptcha.execute) {
+        reject(new Error('reCAPTCHA did not load'));
+        return;
+      }
+      grecaptcha.ready(() => {
+        grecaptcha.execute(RECAPTCHA_SITE_KEY, { action }).then(resolve, reject);
+      });
+    });
+  }
+
   const form = document.getElementById('contactForm');
   if (form) {
     const note = form.querySelector('.form-note');
@@ -349,21 +365,28 @@
         return;
       }
 
-      // reCAPTCHA: require a completed challenge before hitting the API. Falls
-      // back to "not configured" rather than silently skipping the check if
-      // the script failed to load or the site key is still the placeholder.
-      const recaptchaToken = (typeof grecaptcha !== 'undefined') ? grecaptcha.getResponse() : '';
-      if (!recaptchaToken) {
-        setNote('Please complete the reCAPTCHA challenge.', 'error');
-        return;
-      }
-
       submitting = true;
       submitBtn.disabled = true;
       submitBtn.setAttribute('aria-busy', 'true');
       const originalLabel = submitBtn.textContent;
       submitBtn.textContent = 'Sending...';
       setNote('');
+
+      // reCAPTCHA v3: silent, no user action required — a failure here means
+      // the script didn't load or isn't configured, not that a real visitor
+      // did anything wrong, so fail honestly rather than block on a retry step.
+      let recaptchaToken;
+      try {
+        recaptchaToken = await getRecaptchaToken('contact_form');
+      } catch (err) {
+        console.error('reCAPTCHA token request failed:', err);
+        setNote("We couldn't send your request. Please try again.", 'error');
+        submitting = false;
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalLabel;
+        submitBtn.removeAttribute('aria-busy');
+        return;
+      }
 
       // Idempotency key: unique per submit attempt, and re-used across retries of
       // the SAME attempt, so a flaky network retry can never create two rows
@@ -393,6 +416,7 @@
         message: fields.message.value.trim(),
         source_page: window.location.href,
         recaptcha_token: recaptchaToken,
+        recaptcha_action: 'contact_form',
       };
 
       try {
@@ -420,9 +444,6 @@
       } finally {
         submitting = false;
         submitBtn.removeAttribute('aria-busy');
-        // reCAPTCHA tokens are single-use and short-lived — always reset so a
-        // retry (or the next visitor on a shared session) gets a fresh challenge.
-        if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
       }
     });
   }
@@ -509,18 +530,25 @@
         return;
       }
 
-      const recaptchaToken = (typeof grecaptcha !== 'undefined') ? grecaptcha.getResponse() : '';
-      if (!recaptchaToken) {
-        setNote('Please complete the reCAPTCHA challenge.', 'error');
-        return;
-      }
-
       submitting = true;
       submitBtn.disabled = true;
       submitBtn.setAttribute('aria-busy', 'true');
       const originalLabel = submitBtn.textContent;
       submitBtn.textContent = 'Sending...';
       setNote('');
+
+      let recaptchaToken;
+      try {
+        recaptchaToken = await getRecaptchaToken('talent_form');
+      } catch (err) {
+        console.error('reCAPTCHA token request failed:', err);
+        setNote("We couldn't send your request. Please try again.", 'error');
+        submitting = false;
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalLabel;
+        submitBtn.removeAttribute('aria-busy');
+        return;
+      }
 
       const payload = {
         request_ref: uuidv4(),
@@ -534,6 +562,7 @@
         message: buildMessage(),
         source_page: window.location.href,
         recaptcha_token: recaptchaToken,
+        recaptcha_action: 'talent_form',
       };
 
       try {
@@ -561,7 +590,6 @@
       } finally {
         submitting = false;
         submitBtn.removeAttribute('aria-busy');
-        if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
       }
     });
   }
