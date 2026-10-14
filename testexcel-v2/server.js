@@ -161,7 +161,9 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
     // persisted — do not fail the whole request over a mail-provider hiccup,
     // just log it for troubleshooting.
     try {
-      const toEmail = process.env.NOTIFY_TO_EMAIL;
+      // Not a secret, so safe to default here — overridable via env var if
+      // the inbox ever needs to change without a code deploy.
+      const toEmail = process.env.NOTIFY_TO_EMAIL || 'info@testexcel.tech';
       if (toEmail) {
         await getMailer().sendMail({
           from: process.env.SMTP_USER,
