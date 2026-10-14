@@ -336,7 +336,7 @@
 
       if (!name) return 'Please enter your full name.';
       if (!email || !EMAIL_RE.test(email)) return 'Please enter a valid email address.';
-      if (!message || message.length < 10) return 'Please tell us a little more about how we can help.';
+      if (!message || message.length < 3) return 'Please tell us a little more about how we can help.';
       return null;
     }
 
